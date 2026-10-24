@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>KINERJAAI — Dashboard SDM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">K</div>
+                <div><strong>KINERJAAI</strong><small>HR Performance Intelligence</small></div>
+            </div>
+            <div>
+                <div class="navlabel">MENU UTAMA</div>
+                <nav class="nav"><button class="active" data-page="dashboard"><span class="ico">▦</span><span
+                            class="navtxt">Dashboard</span></button><button data-page="kpi"><span
+                            class="ico">◫</span><span class="navtxt">Data KPI</span></button><button
+                        data-page="indikator"><span class="ico">◎</span><span class="navtxt">Indikator
+                            KPI</span></button><button data-page="rekomendasi"><span class="ico">✦</span><span
+                            class="navtxt">Rekomendasi</span></button><button data-page="monitoring"><span
+                            class="ico">↗</span><span class="navtxt">Progress Monitoring</span></button></nav>
+            </div>
+            <div class="sidefoot"><b>Mode prototipe</b>Semua data karyawan di dashboard ini bersifat fiktif untuk
+                pengujian.</div>
+        </aside>
+        <main class="main">
+            <header class="topbar">
+                <div><b id="topTitle">Dashboard</b>
+                    <div class="crumb">KINERJAAI / <span id="crumb">Ringkasan kinerja</span></div>
+                </div>
+                <div class="topright"><span class="pill">● DATA SINTETIS</span>
+                    <div class="avatar">HR</div>
+                </div>
+            </header>
+            <div class="content">
+                <section id="page-dashboard" class="page active">
+                    <div class="heading">
+                        <div>
+                            <h1>Ringkasan Kinerja</h1>
+                            <div class="sub">Pantau KPI, identifikasi kesenjangan, dan tindak lanjut pengembangan
+                                kompetensi.</div>
+                        </div>
+                        <div class="actions"><select class="select" id="periodSelect">
+                                <option>2026-T3</option>
+                                <option>2026-T2</option>
+                                <option>2026-T1</option>
+                            </select><button class="btn primary" onclick="showPage('indikator')">＋ Kelola
+                                indikator</button></div>
+                    </div>
+                    <div class="grid stats" id="stats"></div>
+                    <div class="grid twocol">
+                        <div class="card">
+                            <div class="cardhead">
+                                <div>
+                                    <div class="cardtitle">Rata-rata skor kinerja</div>
+                                    <div class="carddesc">Skor terbobot per periode (maksimum tampilan 120%)</div>
+                                </div><span class="pill">TRIWULAN</span>
+                            </div>
+                            <div id="trendChart" class="chart"></div>
+                            <div class="legend"><span><i class="dot" style="background:#3b70e9"></i>Skor
+                                    rata-rata</span><span><i class="dot" style="background:#27b79f"></i>Target
+                                    100%</span></div>
+                        </div>
+                        <div class="card">
+                            <div class="cardhead">
+                                <div>
+                                    <div class="cardtitle">Distribusi kategori kinerja</div>
+                                    <div class="carddesc">Berdasarkan batas kategori pada parameter</div>
+                                </div>
+                            </div>
+                            <div class="donutrow">
+                                <div id="donut" class="donut"></div>
+                                <div class="legendlist" id="distLegend"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card tablecard">
+                        <div class="tabletop">
+                            <div>
+                                <div class="cardtitle">Karyawan yang perlu ditinjau</div>
+                                <div class="carddesc">Prioritas berdasarkan skor dan gap KPI terbesar</div>
+                            </div><input id="dashSearch" class="search" placeholder="Cari ID atau jabatan…"
+                                oninput="renderPriority()">
+                        </div>
+                        <div class="tablewrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Karyawan</th>
+                                        <th>Jabatan</th>
+                                        <th>Skor akhir</th>
+                                        <th>KPI gap terbesar</th>
+                                        <th>Gap</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="priorityBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="page-kpi" class="page">
+                    <div class="heading">
+                        <div>
+                            <h1>Data KPI</h1>
+                            <div class="sub">Rekap target dan capaian berdasarkan karyawan, periode, dan indikator.
+                            </div>
+                        </div>
+                        <div class="actions"><select id="kpiPeriod" class="select">
+                                <option>2026-T3</option>
+                                <option>2026-T2</option>
+                                <option>2026-T1</option>
+                            </select><button class="btn" onclick="downloadCSV()">↓ Ekspor CSV</button></div>
+                    </div>
+                    <div class="card tablecard">
+                        <div class="tabletop">
+                            <div>
+                                <div class="cardtitle">Rekaman KPI</div>
+                                <div class="carddesc" id="recordCount"></div>
+                            </div><input id="kpiSearch" class="search" placeholder="Cari karyawan / KPI…"
+                                oninput="renderKpiTable()">
+                        </div>
+                        <div class="tablewrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Karyawan</th>
+                                        <th>Indikator</th>
+                                        <th>Target</th>
+                                        <th>Capaian</th>
+                                        <th>Gap</th>
+                                        <th>Skor pencapaian</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="kpiBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="page-indikator" class="page">
+                    <div class="heading">
+                        <div>
+                            <h1>Indikator KPI</h1>
+                            <div class="sub">Kelola indikator, satuan, arah penilaian, bobot, dan target standar.</div>
+                        </div>
+                        <div class="actions"><input class="search" id="indSearch" placeholder="Cari indikator…"
+                                oninput="renderIndicators()"><button class="btn primary" onclick="openModal()">＋ Tambah
+                                indikator</button></div>
+                    </div>
+                    <div class="notice">Indikator tambahan disimpan di sesi browser prototipe ini. Untuk implementasi
+                        produksi, hubungkan formulir ke database dan validasi bobot per jabatan agar totalnya 100%.
+                    </div>
+                    <div id="indicatorGrid" class="grid indicatorgrid"></div>
+                </section>
+                <section id="page-rekomendasi" class="page">
+                    <div class="heading">
+                        <div>
+                            <h1>Rekomendasi Pengembangan</h1>
+                            <div class="sub">Pilihan rekomendasi ditinjau dan diputuskan oleh pengelola SDM, bukan AI
+                                secara otomatis.</div>
+                        </div>
+                        <div class="actions"><span class="pill">HUMAN-IN-THE-LOOP</span></div>
+                    </div>
+                    <div class="grid stats" id="recStats"></div>
+                    <div class="card tablecard">
+                        <div class="tabletop">
+                            <div>
+                                <div class="cardtitle">Daftar rekomendasi</div>
+                                <div class="carddesc">Rekomendasi yang sudah ada pada basis data fiktif</div>
+                            </div>
+                        </div>
+                        <div class="tablewrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Karyawan</th>
+                                        <th>KPI utama</th>
+                                        <th>Opsi rekomendasi</th>
+                                        <th>Keputusan manusia</th>
+                                        <th>Ditinjau oleh</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="page-monitoring" class="page">
+                    <div class="heading">
+                        <div>
+                            <h1>Progress Monitoring</h1>
+                            <div class="sub">Pantau tindak lanjut dan evaluasi KPI pada periode berikutnya.</div>
+                        </div>
+                        <div class="actions"><span class="pill">PERIODE EVALUASI: 2026-T4</span></div>
+                    </div>
+                    <div class="grid stats" id="monitorStats"></div>
+                    <div class="card tablecard">
+                        <div class="tabletop">
+                            <div>
+                                <div class="cardtitle">Tindak lanjut pengembangan</div>
+                                <div class="carddesc">Capaian evaluasi belum terisi ditampilkan sebagai belum
+                                    dievaluasi, bukan nol.</div>
+                            </div>
+                        </div>
+                        <div class="tablewrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Karyawan</th>
+                                        <th>Tindakan dipilih</th>
+                                        <th>KPI sasaran</th>
+                                        <th>Nilai awal</th>
+                                        <th>Target</th>
+                                        <th>Capaian berikutnya</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monitorBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <div class="modalback" id="modal">
+        <div class="modal">
+            <h2>Tambah indikator KPI</h2>
+            <div class="sub" style="margin-bottom:18px">Masukkan indikator baru untuk prototipe dashboard.</div>
+            <div class="formrow">
+                <div class="field"><label>Kode indikator</label><input id="fCode" placeholder="MIS-01"></div>
+                <div class="field"><label>Jabatan</label><select id="fRole">
+                        <option>Staf Administrasi</option>
+                        <option>Staf Arsip</option>
+                        <option>Staf Administrasi SDM</option>
+                        <option>Staf Keuangan</option>
+                        <option>Staf Layanan</option>
+                    </select></div>
+                <div class="field" style="grid-column:1/-1"><label>Nama indikator</label><input id="fName"
+                        placeholder="Contoh: Ketepatan pembaruan data"></div>
+                <div class="field"><label>Satuan</label><select id="fUnit">
+                        <option value="persen">Persen (%)</option>
+                        <option value="jumlah">Jumlah</option>
+                        <option value="menit">Menit</option>
+                        <option value="skala 1-5">Skala 1–5</option>
+                    </select></div>
+                <div class="field"><label>Arah penilaian</label><select id="fDirection">
+                        <option value="naik">Semakin tinggi semakin baik</option>
+                        <option value="turun">Semakin rendah semakin baik</option>
+                    </select></div>
+                <div class="field"><label>Bobot (%)</label><input id="fWeight" type="number" min="1" max="100"
+                        value="20"></div>
+                <div class="field"><label>Target standar</label><input id="fTarget" type="number" min="0" step="any"
+                        value="90"></div>
+            </div>
+            <div class="modalactions"><button class="btn" onclick="closeModal()">Batal</button><button
+                    class="btn primary" onclick="addIndicator()">Simpan indikator</button></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
